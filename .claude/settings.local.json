@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod tidy:*)",
+      "Bash(go build:*)",
+      "Bash(timeout 10 ./smart-trash-api.exe:*)",
+      "Bash(psql:*)",
+      "Bash(cat:*)",
+      "Bash(PGPASSWORD=n147369 psql:*)",
+      "Bash(curl:*)",
+      "Bash(\"https://suekk-bucket.fcc0e164ed5f9fcf121a73f8f111ccd1.r2.cloudflarestorage.com/trash/TEST001/1765632276936.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ec1293bc10ab6bff0c09788a73b839dd%2F20251213%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20251213T132436Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&x-id=PutObject&X-Amz-Signature=f03f55d456b7b2c271cb5f7f0e1961d28e93266da0817c3a14c0ef543cbabe41\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
