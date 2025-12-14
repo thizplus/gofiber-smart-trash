@@ -43,6 +43,9 @@ type TrashResponse struct {
 	BinNumber     int       `json:"bin_number"`
 	BinLabel      string    `json:"bin_label"`
 	Message       string    `json:"message,omitempty"` // Human-readable result message
+	L0Detected    bool      `json:"l0_detected"`              // L0 พบวัตถุหรือไม่
+	L0Label       string    `json:"l0_label,omitempty"`       // YOLO detected object (bottle, cup, etc.)
+	L0Confidence  float64   `json:"l0_confidence,omitempty"`  // YOLO confidence
 	ClassifyError string    `json:"classify_error,omitempty"`
 	ClassifiedAt  time.Time `json:"classified_at,omitempty"`
 

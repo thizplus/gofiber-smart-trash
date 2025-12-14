@@ -62,6 +62,9 @@ func (s *trashServiceImpl) CreateTrashRecord(ctx context.Context, req *dto.Creat
 	var classifyResult *ports.ClassificationResult
 	var classifyErr error
 	var message string
+	var l0Detected bool
+	var l0Label string
+	var l0Confidence float64
 
 	if s.aiAdapter != nil {
 		log.Printf("[AI] Classifying image: %s", req.ImageURL)
@@ -71,7 +74,10 @@ func (s *trashServiceImpl) CreateTrashRecord(ctx context.Context, req *dto.Creat
 			log.Printf("[AI] Classification failed: %v", classifyErr)
 			trash.ClassifyError = classifyErr.Error()
 		} else {
-			log.Printf("[AI] Classification result: %s (%.2f%%)", classifyResult.Category, classifyResult.Confidence*100)
+			log.Printf("[AI] L0 (YOLO): detected=%v, label=%s (%.2f%%)",
+				classifyResult.L0Detected, classifyResult.L0Label, classifyResult.L0Confidence*100)
+			log.Printf("[AI] L1 (Trash-Net): %s (%.2f%%)",
+				classifyResult.Category, classifyResult.Confidence*100)
 			trash.Category = classifyResult.Category
 			trash.SubCategory = classifyResult.SubCategory
 			trash.Confidence = classifyResult.Confidence
@@ -79,6 +85,9 @@ func (s *trashServiceImpl) CreateTrashRecord(ctx context.Context, req *dto.Creat
 			trash.BinLabel = classifyResult.BinLabel
 			trash.ClassifiedAt = time.Now()
 			message = classifyResult.Message
+			l0Detected = classifyResult.L0Detected
+			l0Label = classifyResult.L0Label
+			l0Confidence = classifyResult.L0Confidence
 		}
 	}
 
@@ -87,20 +96,23 @@ func (s *trashServiceImpl) CreateTrashRecord(ctx context.Context, req *dto.Creat
 	}
 
 	return &dto.TrashResponse{
-		ID:           trash.ID,
-		DeviceID:     trash.DeviceID,
-		ImageURL:     trash.ImageURL,
-		Latitude:     trash.Latitude,
-		Longitude:    trash.Longitude,
-		Category:     trash.Category,
-		SubCategory:  trash.SubCategory,
-		Confidence:   trash.Confidence,
-		BinNumber:    trash.BinNumber,
-		BinLabel:     trash.BinLabel,
-		Message:      message,
+		ID:            trash.ID,
+		DeviceID:      trash.DeviceID,
+		ImageURL:      trash.ImageURL,
+		Latitude:      trash.Latitude,
+		Longitude:     trash.Longitude,
+		Category:      trash.Category,
+		SubCategory:   trash.SubCategory,
+		Confidence:    trash.Confidence,
+		BinNumber:     trash.BinNumber,
+		BinLabel:      trash.BinLabel,
+		Message:       message,
+		L0Detected:    l0Detected,
+		L0Label:       l0Label,
+		L0Confidence:  l0Confidence,
 		ClassifyError: trash.ClassifyError,
-		ClassifiedAt: trash.ClassifiedAt,
-		CreatedAt:    trash.CreatedAt,
+		ClassifiedAt:  trash.ClassifiedAt,
+		CreatedAt:     trash.CreatedAt,
 	}, nil
 }
 
